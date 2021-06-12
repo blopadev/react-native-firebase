@@ -41,7 +41,11 @@ const UsersList = (props) => {
             <ListItem
               key={user.id}
               bottomDivider // aparece una líne bajo ls tarjetas
-              onPress={() => alert(user.id)}
+              onPress={() => {
+                props.navigation.navigate('UserDetailScreen', {
+                  userId: user.id
+                })
+              }}
             >
               <ListItem.Chevron />
               <Avatar
