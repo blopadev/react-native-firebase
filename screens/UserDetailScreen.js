@@ -4,14 +4,15 @@ import firebase from "../database/firebase";
 
 
 const UserDetailScreen = (props) => {
-  // console.log(props.route.params.userId)
 
-  const [user, setUser] = useState({
+  const initialState = {
     id: '',
     name: '',
     email: '',
     phone: ''
-  })
+  }
+
+  const [user, setUser] = useState(initialState)
 
   const [loading, setLoading] = useState(true)
 
@@ -40,10 +41,24 @@ const UserDetailScreen = (props) => {
     props.navigation.navigate('UsersList')
   }
 
+  // como tenemos el user guardado en un estado, podríamos cogerlo desde user, además de desda la props, como arriba
+  const updateUser = async () => {
+    //const dbRef = firebase.db.collection('users').doc(user.userId); 
+    const dbRef = firebase.db.collection('users').doc(props.route.params.userId);
+    await dbRef.set({
+      name: user.name,
+      email: user.email,
+      phone: user.phone
+    })
+
+    setUser(initialState)
+    props.navigation.navigate('UsersList')
+  }
+
   const openConfirmationAlert = () => {
     Alert.alert('Remove The User', 'Are you sure?', [
-      {text: 'Yes', onPress: () => deleteUser},
-      {text: 'No', onPress: () => console.log(false)}
+      { text: 'Yes', onPress: () => deleteUser },
+      { text: 'No', onPress: () => console.log(false) }
     ])
   }
 
@@ -79,7 +94,7 @@ const UserDetailScreen = (props) => {
         />
       </View>
       <View>
-        <Button color="#19AC52" title="Update User" onPress={() => alert('works')} />
+        <Button color="#19AC52" title="Update User" onPress={() => updateUser()} />
       </View>
       <View>
         <Button color="#E37399" title="Delete User" onPress={() => openConfirmationAlert()} />
